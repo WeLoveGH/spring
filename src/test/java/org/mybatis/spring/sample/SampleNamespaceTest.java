@@ -19,6 +19,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
  * Example of MyBatis-Spring integration with a DAO configured via MapperScannerConfigurer.
+ *
+ * 演示如何使用自定义 MyBatis XML 命名空间.
+ *
  */
 @SpringJUnitConfig(locations = { "classpath:org/mybatis/spring/sample/config/applicationContext-namespace.xml" })
 class SampleNamespaceTest extends AbstractSampleTest {

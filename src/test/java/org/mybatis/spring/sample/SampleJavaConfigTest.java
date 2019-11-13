@@ -27,6 +27,12 @@ import org.mybatis.spring.sample.service.FooService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+
+/**
+ *
+ * 演示如何基于 Spring 的 @Configuration 来手工创建 MyBatis 的 bean。
+ *
+ */
 @SpringJUnitConfig(classes = SampleConfig.class)
 class SampleJavaConfigTest {
 

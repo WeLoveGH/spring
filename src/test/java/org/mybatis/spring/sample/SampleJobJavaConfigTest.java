@@ -18,6 +18,11 @@ package org.mybatis.spring.sample;
 import org.mybatis.spring.sample.config.SampleJobConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+/**
+ *
+ * 演示如何在 Java 配置中使用 Spring Batch 中的 ItemReader 和 ItemWriter。
+ *
+ */
 @SpringJUnitConfig({ SampleJobConfig.class, AbstractSampleJobTest.LocalContext.class })
 class SampleJobJavaConfigTest extends AbstractSampleJobTest {
   @Override

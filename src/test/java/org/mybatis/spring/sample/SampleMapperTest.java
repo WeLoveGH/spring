@@ -19,6 +19,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
  * Example of MyBatis-Spring integration with a DAO created by MapperFactoryBean.
+ *
+ * 演示基于 MapperFactoryBean 的基本配置，这将动态构建 UserMapper 的一个实现。
+ *
  */
 @SpringJUnitConfig(locations = { "classpath:org/mybatis/spring/sample/config/applicationContext-mapper.xml" })
 class SampleMapperTest extends AbstractSampleTest {

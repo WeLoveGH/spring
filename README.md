@@ -21,3 +21,23 @@ Essentials
 ----------
 
 * [See the docs](http://mybatis.github.io/spring/)
+
+* [中文文档](http://mybatis.org/spring/zh/index.html)
+
+核心类：
+
+1:SqlSessionFactoryBean 
+
+2:SqlSessionFactory
+
+3:MapperFactoryBean
+
+4:SqlSessionTemplate —— 他是 MyBatis-Spring 的核心，SqlSessionTemplate 是线程安全的，可以被多个 DAO 或映射器所共享
+
+5:DataSourceTransactionManager
+
+6:JtaTransactionManager
+
+7:TransactionTemplate
+
+8:SqlSessionDaoSupport

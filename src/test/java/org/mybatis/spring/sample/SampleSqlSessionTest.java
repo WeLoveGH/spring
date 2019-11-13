@@ -27,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Example of basic MyBatis-Spring integration usage with a manual DAO implementation that subclasses
  * SqlSessionDaoSupport.
+ *
+ * 演示如何基于 Spring 管理的 SqlSession 手动编写 DAO，并在 UserDaoImpl.java 中提供你自己的实现。
+ *
  */
 @DirtiesContext
 @SpringJUnitConfig(locations = { "classpath:org/mybatis/spring/sample/config/applicationContext-sqlsession.xml" })

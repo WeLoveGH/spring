@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mybatis.spring.sample;
+package com.godtrue.mybatis.service;
 
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import com.godtrue.mybatis.domain.User;
+
+import java.util.List;
 
 /**
- * Example of MyBatis-Spring integration with a DAO configured via MapperScannerConfigurer.
- *
- * 演示如何使用 MapperScannerConfigurer 来自动发现项目中所有的映射器。
- *
+ * 用户服务
  */
-@SpringJUnitConfig(locations = { "classpath:org/mybatis/spring/sample/config/applicationContext-scanner.xml" })
-class SampleScannerTest extends AbstractSampleTest {
+public interface UserService {
+  /**
+   * 根据用户ID，获取用户信息
+   * @param userId
+   * @return
+   */
+  User getUser(String userId);
+
+  /**
+   * 获取所有的用户信息
+   * @return
+   */
+  List<User> getUsers();
 }

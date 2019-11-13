@@ -19,6 +19,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+/**
+ *
+ * 演示如何在 XML 配置中使用 Spring Batch 中的 ItemReader 和 ItemWriter
+ *
+ */
 @SpringJUnitConfig({ AbstractSampleJobTest.LocalContext.class, SampleJobXmlConfigTest.LocalContext.class })
 class SampleJobXmlConfigTest extends AbstractSampleJobTest {
 

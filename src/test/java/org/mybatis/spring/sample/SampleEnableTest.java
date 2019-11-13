@@ -24,6 +24,10 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * Test to ensure that the {@link MapperScan} annotation works as expected.
  *
  * @since 1.2.0
+ *
+ *
+ * 演示如何使用 Spring 的 @Configuration 和 @MapperScann 注解来自动发现 mappers.
+ *
  */
 @SpringJUnitConfig
 class SampleEnableTest extends AbstractSampleTest {

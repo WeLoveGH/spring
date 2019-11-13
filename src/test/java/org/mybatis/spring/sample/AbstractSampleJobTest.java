@@ -46,6 +46,9 @@ abstract class AbstractSampleJobTest {
 
     List<Map<String, Object>> persons = jdbcTemplate.queryForList("SELECT * FROM persons ORDER BY person_id",
         EmptySqlParameterSource.INSTANCE);
+
+    System.out.println("persons is : " + persons);
+
     Assertions.assertEquals(5, persons.size());
     Object operationBy = persons.get(0).get("OPERATION_BY");
     Object operationAt = persons.get(0).get("OPERATION_AT");

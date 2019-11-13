@@ -15,6 +15,8 @@
  */
 package org.mybatis.spring.asyncsynchronization;
 
+import org.springframework.transaction.support.TransactionSynchronization;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,21 +24,19 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.transaction.support.TransactionSynchronization;
-
 /**
  * For use as ByteMan helper
- * 
+ *
  * @author Alex Rykov
  */
 @SuppressWarnings("unused")
 public class AsyncAfterCompletionHelper {
   /**
-   * 
+   *
    * Invocation handler that performs afterCompletion on a separate thread See Github issue #18
-   * 
+   *
    * @author Alex Rykov
-   * 
+   *
    */
   static class AsyncAfterCompletionInvocationHandler implements InvocationHandler {
 
@@ -48,6 +48,9 @@ public class AsyncAfterCompletionHelper {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      /**
+       * 如果方法名是 afterCompletion ，则进行功能增强，采用多线程的方式执行，且记录方法执行的情况，正常返回的信息和异常的信息
+       */
       if ("afterCompletion".equals(method.getName())) {
         final Set<Object> retValSet = new HashSet<>();
         final Set<Throwable> exceptionSet = new HashSet<>();

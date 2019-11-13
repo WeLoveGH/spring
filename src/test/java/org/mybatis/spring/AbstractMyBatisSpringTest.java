@@ -15,40 +15,62 @@
  */
 package org.mybatis.spring;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.sql.SQLException;
-
-import org.apache.ibatis.plugin.Interceptor;
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockResultSet;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.mockrunner.mock.jdbc.MockConnection;
-import com.mockrunner.mock.jdbc.MockResultSet;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractMyBatisSpringTest {
 
+  /**
+   * 数据源
+   */
   protected static PooledMockDataSource dataSource = new PooledMockDataSource();
 
+  /**
+   * SQL会话工厂
+   */
   protected static SqlSessionFactory sqlSessionFactory;
 
+  /**
+   * 执行拦截器，Spring 框架提供，用于记录相关的SQL执行信息
+   */
   protected static ExecutorInterceptor executorInterceptor = new ExecutorInterceptor();
 
+  /**
+   * 数据源事务管理器
+   */
   protected static DataSourceTransactionManager txManager;
 
+  /**
+   * 持久化异常转换器
+   */
   protected static PersistenceExceptionTranslator exceptionTranslator;
 
+  /**
+   * 模拟的数据库链接
+   */
   protected MockConnection connection;
 
+  /**
+   * 模拟的数据库链接二
+   */
   protected MockConnection connectionTwo;
 
+  /**
+   * 在测试方法执行前执行，用于设置基本的资源信息
+   * @throws Exception
+   */
   @BeforeAll
   public static void setupBase() throws Exception {
     // create an SqlSessionFactory that will use SpringManagedTransactions

@@ -15,12 +15,6 @@
  */
 package org.mybatis.spring.mapper;
 
-import static org.springframework.util.Assert.notNull;
-
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.PropertyValue;
@@ -40,6 +34,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.springframework.util.Assert.notNull;
 
 /**
  * BeanDefinitionRegistryPostProcessor that searches recursively starting from a base package for interfaces and
@@ -91,32 +91,74 @@ import org.springframework.util.StringUtils;
 public class MapperScannerConfigurer
     implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationContextAware, BeanNameAware {
 
+  /**
+   * 基础包名
+   */
   private String basePackage;
 
+  /**
+   * 是否添加配置
+   */
   private boolean addToConfig = true;
 
+  /**
+   * 懒初始化
+   */
   private String lazyInitialization;
 
+  /**
+   * SQL 会话工厂
+   */
   private SqlSessionFactory sqlSessionFactory;
 
+  /**
+   * SQL 会话模板
+   */
   private SqlSessionTemplate sqlSessionTemplate;
 
+  /**
+   * SQL 会话工厂实例名
+   */
   private String sqlSessionFactoryBeanName;
 
+  /**
+   * SQL 会话模板实例名
+   */
   private String sqlSessionTemplateBeanName;
 
+  /**
+   * 注解类
+   */
   private Class<? extends Annotation> annotationClass;
 
+  /**
+   * 标记接口类
+   */
   private Class<?> markerInterface;
 
+  /**
+   * 映射工厂类
+   */
   private Class<? extends MapperFactoryBean> mapperFactoryBeanClass;
 
+  /**
+   * 应用上下文
+   */
   private ApplicationContext applicationContext;
 
+  /**
+   * 类名称
+   */
   private String beanName;
 
+  /**
+   * 流程属性占位符
+   */
   private boolean processPropertyPlaceHolders;
 
+  /**
+   * 实例名称生成器
+   */
   private BeanNameGenerator nameGenerator;
 
   /**
@@ -191,7 +233,7 @@ public class MapperScannerConfigurer
    * Specifies which {@code SqlSessionTemplate} to use in the case that there is more than one in the spring context.
    * Usually this is only needed when you have more than one datasource.
    * <p>
-   * 
+   *
    * @deprecated Use {@link #setSqlSessionTemplateBeanName(String)} instead
    *
    * @param sqlSessionTemplate
@@ -222,7 +264,7 @@ public class MapperScannerConfigurer
    * Specifies which {@code SqlSessionFactory} to use in the case that there is more than one in the spring context.
    * Usually this is only needed when you have more than one datasource.
    * <p>
-   * 
+   *
    * @deprecated Use {@link #setSqlSessionFactoryBeanName(String)} instead.
    *
    * @param sqlSessionFactory
@@ -253,7 +295,7 @@ public class MapperScannerConfigurer
    * Specifies a flag that whether execute a property placeholder processing or not.
    * <p>
    * The default is {@literal false}. This means that a property placeholder processing does not execute.
-   * 
+   *
    * @since 1.1.1
    *
    * @param processPropertyPlaceHolders
@@ -329,7 +371,7 @@ public class MapperScannerConfigurer
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @since 1.0.2
    */
   @Override

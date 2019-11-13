@@ -38,6 +38,9 @@ class SampleSqlSessionTest {
   @Test
   final void testFooService() {
     User user = this.barService.doSomeBusinessStuff("u1");
+
+    System.out.println("user is : "+ user);
+
     assertThat(user).isNotNull();
     assertThat(user.getName()).isEqualTo("Pocoyo");
   }

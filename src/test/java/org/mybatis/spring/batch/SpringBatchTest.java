@@ -58,12 +58,18 @@ class SpringBatchTest {
   void shouldDuplicateSalaryOfAllEmployees() throws Exception {
     List<Employee> employees = new ArrayList<>();
     Employee employee = pagingNoNestedItemReader.read();
+
+    System.out.println(" first employee = " + employee);
+
     while (employee != null) {
       employee.setSalary(employee.getSalary() * 2);
       employees.add(employee);
       employee = pagingNoNestedItemReader.read();
     }
+
     writer.write(employees);
+
+    System.out.println("second employees = " + employees);
 
     assertThat((Integer) session.selectOne("checkSalarySum")).isEqualTo(20000);
     assertThat((Integer) session.selectOne("checkEmployeeCount")).isEqualTo(employees.size());
@@ -93,12 +99,17 @@ class SpringBatchTest {
     try {
       List<Employee> employees = new ArrayList<>();
       Employee employee = cursorNoNestedItemReader.read();
+
+      System.out.println("1 employee = " + employee);
+
       while (employee != null) {
         employee.setSalary(employee.getSalary() * 2);
         employees.add(employee);
         employee = cursorNoNestedItemReader.read();
       }
       writer.write(employees);
+
+      System.out.println("2 employees = " + employees);
 
       assertThat((Integer) session.selectOne("checkSalarySum")).isEqualTo(20000);
       assertThat((Integer) session.selectOne("checkEmployeeCount")).isEqualTo(employees.size());
@@ -114,12 +125,17 @@ class SpringBatchTest {
     try {
       List<Employee> employees = new ArrayList<>();
       Employee employee = cursorNestedItemReader.read();
+
+      System.out.println("one employee = " + employee);
+
       while (employee != null) {
         employee.setSalary(employee.getSalary() * 2);
         employees.add(employee);
         employee = cursorNestedItemReader.read();
       }
       writer.write(employees);
+
+      System.out.println("two employees = " + employees);
 
       assertThat((Integer) session.selectOne("checkSalarySum")).isEqualTo(20000);
       assertThat((Integer) session.selectOne("checkEmployeeCount")).isEqualTo(employees.size());

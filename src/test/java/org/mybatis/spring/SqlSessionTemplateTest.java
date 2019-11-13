@@ -15,35 +15,43 @@
  */
 package org.mybatis.spring;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.sql.SQLException;
-
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
 // tests basic usage and implementation only
 // MapperFactoryBeanTest handles testing the transactional functions in SqlSessionTemplate
 public class SqlSessionTemplateTest extends AbstractMyBatisSpringTest {
 
+  /**
+   * 声明 SqlSession，SqlSession 是操作 SQL 语句的核心接口
+   */
   private static SqlSession sqlSessionTemplate;
 
+  /**
+   * 执行测试用例的测试方法之前，执行此方法，用于设置各种前置资源
+   */
   @BeforeAll
   static void setupSqlTemplate() {
     sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
   }
 
+  /**
+   * 执行测试用例的测试方法之后，执行此方法，用于释放各种前置资源
+   */
   @AfterEach
   void tearDown() {
     try {

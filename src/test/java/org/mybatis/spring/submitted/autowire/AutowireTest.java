@@ -15,10 +15,10 @@
  */
 package org.mybatis.spring.submitted.autowire;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AutowireTest {
 
@@ -28,10 +28,16 @@ class AutowireTest {
         "classpath:org/mybatis/spring/submitted/autowire/spring.xml")) {
 
       FooMapper fooMapper = (FooMapper) context.getBean("fooMapper");
+
+      System.out.println("fooMapper is : " + fooMapper);
+
       assertThat(fooMapper).isNotNull();
       fooMapper.executeFoo();
 
       BarMapper barMapper = (BarMapper) context.getBean("barMapper");
+
+      System.out.println("barMapper is : " + barMapper);
+
       assertThat(barMapper).isNotNull();
       barMapper.executeBar();
     }

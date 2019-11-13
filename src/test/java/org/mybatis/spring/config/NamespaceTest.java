@@ -54,7 +54,7 @@ class NamespaceTest {
     applicationContext.start();
 
     // this will throw an exception if the beans cannot be found
-    applicationContext.getBean("sqlSessionFactory");
+    System.out.println(applicationContext.getBean("sqlSessionFactory"));
   }
 
   @AfterEach
@@ -82,6 +82,8 @@ class NamespaceTest {
 
     SqlSessionFactory sqlSessionFactory = applicationContext.getBean(SqlSessionFactory.class);
     assertEquals(5, sqlSessionFactory.getConfiguration().getMapperRegistry().getMappers().size());
+
+    System.out.println("sqlSessionFactory.getConfiguration().getMapperRegistry().getMappers() is : " + sqlSessionFactory.getConfiguration().getMapperRegistry().getMappers());
 
     // all interfaces with methods should be loaded
     applicationContext.getBean("mapperInterface");

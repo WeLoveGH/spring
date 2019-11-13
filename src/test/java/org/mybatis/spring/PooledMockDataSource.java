@@ -15,16 +15,22 @@
  */
 package org.mybatis.spring;
 
+import com.mockrunner.mock.jdbc.MockDataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-import com.mockrunner.mock.jdbc.MockDataSource;
-
 final class PooledMockDataSource extends MockDataSource {
 
+  /**
+   * 数据源的个数
+   */
   private int connectionCount = 0;
 
+  /**
+   * 数据库链接列表
+   */
   private LinkedList<Connection> connections = new LinkedList<>();
 
   @Override

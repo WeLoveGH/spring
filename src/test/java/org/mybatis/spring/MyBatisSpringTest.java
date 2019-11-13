@@ -40,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MyBatisSpringTest extends AbstractMyBatisSpringTest {
 
+  /**
+   * 声明SQL会话，SqlSession 是 SQL 操作的核心接口
+   */
   private SqlSession session;
 
   @AfterEach
@@ -57,7 +60,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testMyBatisAPI() {
     session = sqlSessionFactory.openSession();
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.close();
 
     assertNoCommit();
@@ -68,7 +71,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testMyBatisAPIWithCommit() {
     session = sqlSessionFactory.openSession();
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.commit(true);
     session.close();
 
@@ -80,7 +83,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testMyBatisAPIWithRollback() {
     session = sqlSessionFactory.openSession();
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.rollback(true);
     session.close();
 
@@ -93,7 +96,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testSpringAPI() {
     session = SqlSessionUtils.getSqlSession(sqlSessionFactory);
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     SqlSessionUtils.closeSqlSession(session, sqlSessionFactory);
 
     assertNoCommit();
@@ -104,7 +107,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testSpringAPIWithCommit() {
     session = SqlSessionUtils.getSqlSession(sqlSessionFactory);
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.commit(true);
     SqlSessionUtils.closeSqlSession(session, sqlSessionFactory);
 
@@ -115,7 +118,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
   @Test
   void testSpringAPIWithRollback() {
     session = SqlSessionUtils.getSqlSession(sqlSessionFactory);
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.rollback(true);
     SqlSessionUtils.closeSqlSession(session, sqlSessionFactory);
 
@@ -128,7 +131,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
     // This is a programming error and could lead to connection leak if there is a transaction
     // in progress. But, the API allows it, so make sure it at least works without a tx.
     session = SqlSessionUtils.getSqlSession(sqlSessionFactory);
-    session.getMapper(TestMapper.class).findTest();
+    System.out.println(session.getMapper(TestMapper.class).findTest());
     session.close();
 
     assertNoCommit();
@@ -144,7 +147,7 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
 
     try {
       session = SqlSessionUtils.getSqlSession(sqlSessionFactory);
-      session.getMapper(TestMapper.class).findTest();
+      System.out.println(session.getMapper(TestMapper.class).findTest());
       SqlSessionUtils.closeSqlSession(session, sqlSessionFactory);
 
       // users need to manually call commit, rollback and close, just like with normal MyBatis
@@ -586,6 +589,8 @@ class MyBatisSpringTest extends AbstractMyBatisSpringTest {
     session.getMapper(TestMapper.class).insertTest("test2");
     session.update("org.mybatis.spring.TestMapper.insertFail");
     session.getMapper(TestMapper.class).insertTest("test3");
+
+    //System.out.println(session.getMapper(TestMapper.class).findTest());
 
     SqlSessionUtils.closeSqlSession(session, sqlSessionFactory);
 

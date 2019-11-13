@@ -15,14 +15,10 @@
  */
 package org.mybatis.spring;
 
-import java.util.Properties;
-
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
+
+import java.util.Properties;
 
 /**
  * Keeps track of Executor commits, rollbacks and close status.
@@ -36,10 +32,19 @@ import org.apache.ibatis.plugin.Signature;
     @Signature(type = Executor.class, method = "close", args = { boolean.class }) })
 final class ExecutorInterceptor implements Interceptor {
 
+  /**
+   * SQL语句提交的个数
+   */
   private int commitCount;
 
+  /**
+   * SQL语句回滚的个数
+   */
   private int rollbackCount;
 
+  /**
+   * 执行器是否关闭
+   */
   private boolean closed;
 
   @Override

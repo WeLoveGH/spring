@@ -15,8 +15,6 @@
  */
 package org.mybatis.spring.submitted.webapp_placeholder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,6 +24,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -42,6 +42,9 @@ class WebappPlaceholderTest {
   void testName() {
     Assertions.assertEquals(0, sqlSessionFactory.getConfiguration().getMapperRegistry().getMappers().size());
     Mapper mapper = applicationContext.getBean(Mapper.class);
+
+    System.out.println("mapper is : " + mapper);
+
     assertThat(mapper).isNotNull();
     Assertions.assertEquals(1, sqlSessionFactory.getConfiguration().getMapperRegistry().getMappers().size());
   }

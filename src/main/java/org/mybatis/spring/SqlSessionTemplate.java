@@ -15,30 +15,24 @@
  */
 package org.mybatis.spring;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.apache.ibatis.reflection.ExceptionUtil.unwrapThrowable;
-import static org.mybatis.spring.SqlSessionUtils.closeSqlSession;
-import static org.mybatis.spring.SqlSessionUtils.getSqlSession;
-import static org.mybatis.spring.SqlSessionUtils.isSqlSessionTransactional;
-import static org.springframework.util.Assert.notNull;
+import org.apache.ibatis.cursor.Cursor;
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.apache.ibatis.executor.BatchResult;
+import org.apache.ibatis.session.*;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.cursor.Cursor;
-import org.apache.ibatis.exceptions.PersistenceException;
-import org.apache.ibatis.executor.BatchResult;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.dao.support.PersistenceExceptionTranslator;
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.apache.ibatis.reflection.ExceptionUtil.unwrapThrowable;
+import static org.mybatis.spring.SqlSessionUtils.*;
+import static org.springframework.util.Assert.notNull;
 
 /**
  * Thread safe, Spring managed, {@code SqlSession} that works with Spring transaction management to ensure that that the
@@ -73,12 +67,24 @@ import org.springframework.dao.support.PersistenceExceptionTranslator;
  */
 public class SqlSessionTemplate implements SqlSession, DisposableBean {
 
+  /**
+   * SQL 会话工厂
+   */
   private final SqlSessionFactory sqlSessionFactory;
 
+  /**
+   * SQL 执行类型
+   */
   private final ExecutorType executorType;
 
+  /**
+   * SQL 会话，这个是核心，通过动态代理模式的形式生成
+   */
   private final SqlSession sqlSessionProxy;
 
+  /**
+   * 持久化异常转换器
+   */
   private final PersistenceExceptionTranslator exceptionTranslator;
 
   /**
@@ -127,6 +133,10 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
     this.sqlSessionFactory = sqlSessionFactory;
     this.executorType = executorType;
     this.exceptionTranslator = exceptionTranslator;
+
+    /**
+     * 通过 JDK 动态代理模式的实现方式，生成合适的 SQL 会话，对应的 SQL 会话功能增强，可以详看 SqlSessionInterceptor
+     */
     this.sqlSessionProxy = (SqlSession) newProxyInstance(SqlSessionFactory.class.getClassLoader(),
         new Class[] { SqlSession.class }, new SqlSessionInterceptor());
   }
@@ -389,7 +399,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
 
   /**
    * Allow gently dispose bean:
-   * 
+   *
    * <pre>
    * {@code
    *
@@ -418,32 +428,116 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    * {@code PersistenceExceptionTranslator}.
    */
   private class SqlSessionInterceptor implements InvocationHandler {
+
+    /**
+     * Processes a method invocation on a proxy instance and returns
+     * the result.  This method will be invoked on an invocation handler
+     * when a method is invoked on a proxy instance that it is
+     * associated with.
+     *
+     * @param   proxy the proxy instance that the method was invoked on
+     *
+     * @param   method the {@code Method} instance corresponding to
+     * the interface method invoked on the proxy instance.  The declaring
+     * class of the {@code Method} object will be the interface that
+     * the method was declared in, which may be a superinterface of the
+     * proxy interface that the proxy class inherits the method through.
+     *
+     * @param   args an array of objects containing the values of the
+     * arguments passed in the method invocation on the proxy instance,
+     * or {@code null} if interface method takes no arguments.
+     * Arguments of primitive types are wrapped in instances of the
+     * appropriate primitive wrapper class, such as
+     * {@code java.lang.Integer} or {@code java.lang.Boolean}.
+     *
+     * @return  the value to return from the method invocation on the
+     * proxy instance.  If the declared return type of the interface
+     * method is a primitive type, then the value returned by
+     * this method must be an instance of the corresponding primitive
+     * wrapper class; otherwise, it must be a type assignable to the
+     * declared return type.  If the value returned by this method is
+     * {@code null} and the interface method's return type is
+     * primitive, then a {@code NullPointerException} will be
+     * thrown by the method invocation on the proxy instance.  If the
+     * value returned by this method is otherwise not compatible with
+     * the interface method's declared return type as described above,
+     * a {@code ClassCastException} will be thrown by the method
+     * invocation on the proxy instance.
+     *
+     * @throws  Throwable the exception to throw from the method
+     * invocation on the proxy instance.  The exception's type must be
+     * assignable either to any of the exception types declared in the
+     * {@code throws} clause of the interface method or to the
+     * unchecked exception types {@code java.lang.RuntimeException}
+     * or {@code java.lang.Error}.  If a checked exception is
+     * thrown by this method that is not assignable to any of the
+     * exception types declared in the {@code throws} clause of
+     * the interface method, then an
+     * {@link UndeclaredThrowableException} containing the
+     * exception that was thrown by this method will be thrown by the
+     * method invocation on the proxy instance.
+     *
+     * @see     UndeclaredThrowableException
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      /**
+       * 获取 SQL 会话
+       */
       SqlSession sqlSession = getSqlSession(SqlSessionTemplate.this.sqlSessionFactory,
           SqlSessionTemplate.this.executorType, SqlSessionTemplate.this.exceptionTranslator);
       try {
+        /**
+         * 调用 SQL 会话对应的方法
+         */
         Object result = method.invoke(sqlSession, args);
+        /**
+         * 如果当前会话是事务中的会话，则进行事务提交
+         */
         if (!isSqlSessionTransactional(sqlSession, SqlSessionTemplate.this.sqlSessionFactory)) {
           // force commit even on non-dirty sessions because some databases require
           // a commit/rollback before calling close()
+          /**
+           * 提交事务
+           */
           sqlSession.commit(true);
         }
+        /**
+         * 返回SQL执行的结果
+         */
         return result;
       } catch (Throwable t) {
+        /**
+         * 包装异常信息
+         */
         Throwable unwrapped = unwrapThrowable(t);
+        /**
+         * 如果异常转换器存在，且异常为持久化的异常，则进行异常信息的转换
+         */
         if (SqlSessionTemplate.this.exceptionTranslator != null && unwrapped instanceof PersistenceException) {
           // release the connection to avoid a deadlock if the translator is no loaded. See issue #22
+          /**
+           * 关闭 SQL 会话
+           */
           closeSqlSession(sqlSession, SqlSessionTemplate.this.sqlSessionFactory);
           sqlSession = null;
+          /**
+           * 如果可能，转换异常的信息
+           */
           Throwable translated = SqlSessionTemplate.this.exceptionTranslator
               .translateExceptionIfPossible((PersistenceException) unwrapped);
+          /**
+           * 如果异常信息转换成功，则替换原来的异常包装信息，且抛出异常信息
+           */
           if (translated != null) {
             unwrapped = translated;
           }
         }
         throw unwrapped;
       } finally {
+        /**
+         * 如果 SQL 会话信息存在，则关闭 SQL 会话
+         */
         if (sqlSession != null) {
           closeSqlSession(sqlSession, SqlSessionTemplate.this.sqlSessionFactory);
         }

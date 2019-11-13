@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * MyBatis @Configuration style sample 
+ * MyBatis @Configuration style sample
  */
 package org.mybatis.spring.sample;
 
@@ -39,12 +39,18 @@ class SampleJavaConfigTest {
   @Test
   void test() {
     User user = fooService.doSomeBusinessStuff("u1");
+
+    System.out.println("user = " + user);
+
     assertThat(user.getName()).isEqualTo("Pocoyo");
   }
 
   @Test
   void testWithMapperFactoryBean() {
     User user = fooServiceWithMapperFactoryBean.doSomeBusinessStuff("u1");
+
+    System.out.println("user = " + user);
+
     assertThat(user.getName()).isEqualTo("Pocoyo");
   }
 

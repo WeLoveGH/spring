@@ -15,23 +15,13 @@
  */
 package org.mybatis.spring;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
+import com.mockrunner.mock.jdbc.MockDataSource;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.io.JBoss6VFS;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
-import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.scripting.LanguageDriverRegistry;
 import org.apache.ibatis.scripting.defaults.RawLanguageDriver;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
@@ -42,7 +32,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.type.TypeAliasRegistry;
 import org.apache.ibatis.type.TypeException;
-import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.junit.jupiter.api.Test;
 import org.mybatis.core.jdk.type.AtomicNumberTypeHandler;
@@ -52,9 +41,16 @@ import org.mybatis.spring.type.DummyTypeHandler;
 import org.mybatis.spring.type.SuperType;
 import org.mybatis.spring.type.TypeHandlerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
-import com.mockrunner.mock.jdbc.MockDataSource;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SqlSessionFactoryBeanTest {
 
@@ -67,6 +63,9 @@ class SqlSessionFactoryBeanTest {
 
   private static MockDataSource dataSource = new MockDataSource();
 
+  /**
+   * 声明SQL会话工程实例
+   */
   private SqlSessionFactoryBean factoryBean;
 
   void setupFactoryBean() {
@@ -135,6 +134,10 @@ class SqlSessionFactoryBeanTest {
     assertDefaultConfig(factoryBean.getObject());
   }
 
+  /**
+   * 动态调整数据库配置信息
+   * @throws Exception
+   */
   @Test
   void testDefaultConfigurationWithConfigurationProperties() throws Exception {
     setupFactoryBean();

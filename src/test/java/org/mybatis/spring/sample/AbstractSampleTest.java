@@ -15,13 +15,13 @@
  */
 package org.mybatis.spring.sample;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.sample.domain.User;
 import org.mybatis.spring.sample.service.FooService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext
 abstract class AbstractSampleTest {
@@ -32,6 +32,9 @@ abstract class AbstractSampleTest {
   @Test
   final void testFooService() {
     User user = this.fooService.doSomeBusinessStuff("u1");
+
+    System.out.println("user = " + user);
+
     assertThat(user).isNotNull();
     assertThat(user.getName()).isEqualTo("Pocoyo");
   }
